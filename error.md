@@ -13,6 +13,16 @@ Format suggestion:
 Entries (newest first):
 
 - Date: 2026-04-12
+- File/Project: BIMIntelligence (build)
+- Error: Microsoft.VisualBasic version conflict between .NET ref pack and Revit assemblies
+- Details: Found conflicts between different versions of "Microsoft.VisualBasic" that could not be resolved. There was a conflict between "Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" and "Microsoft.VisualBasic, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
+    - "Microsoft.VisualBasic, Version=10.0.0.0" was chosen because it was primary and "Microsoft.VisualBasic, Version=10.1.0.0" was not.
+    - References depending on 10.0.0.0: C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\10.0.5\ref\net10.0\Microsoft.VisualBasic.dll
+    - References depending on or unified to 10.1.0.0: Revit 2027 assemblies under C:\Program Files\Autodesk\Revit 2027\ (RevitAPI, RevitAPIUI, RevitDBAPI, etc.).
+  This can cause runtime/type mismatches or build warnings/errors.
+- Action: Align referenced Microsoft.VisualBasic versions: target a compatible .NET runtime, add explicit package/reference to match Revit assemblies, or use binding redirects if applicable. Status: open
+
+- Date: 2026-04-12
 - File/Project: BIMIntelligence/Services/ChatService.cs
 - Error: NullReferenceException when sending message
 - Details: Occurs when ChatService.Send is called with null message; stack trace...
