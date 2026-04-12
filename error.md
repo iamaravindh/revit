@@ -10,12 +10,19 @@ Format suggestion:
 - Details: <stack trace or steps to reproduce>
 - Status: open/closed
 
-Examples:
+Entries (newest first):
 
 - Date: 2026-04-12
 - File/Project: BIMIntelligence/Services/ChatService.cs
 - Error: NullReferenceException when sending message
 - Details: Occurs when ChatService.Send is called with null message; stack trace...
 - Status: open
+
+- Date: 2026-04-12
+- File/Project: BIMIntelligence (build)
+- Error: Assembly version mismatch: RevitAPIUI depends on System.Runtime v10.0.0.0, but referenced System.Runtime is v8.0.0.0
+- Details: Assembly 'RevitAPIUI' with identity 'RevitAPIUI, Version=27.0.10.0, Culture=neutral, PublicKeyToken=null' uses 'System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' which has a higher version than referenced assembly 'System.Runtime' with identity 'System.Runtime, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.
+- Original message: "Assembly 'RevitAPIUI' with identity 'RevitAPIUI, Version=27.0.10.0, Culture=neutral, PublicKeyToken=null' uses 'System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' which has a higher version than referenced assembly 'System .Runtime' with identity 'System .Runtime, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'"
+- Action: Investigate referenced Revit assemblies and project target framework; consider aligning System.Runtime versions by upgrading target framework, updating package references, or adding assembly binding redirects. Status: open
 
 Add new entries at the top so the most recent issues are easy to find.
