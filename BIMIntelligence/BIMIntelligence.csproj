@@ -9,6 +9,9 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <NoWarn>$(NoWarn);MSB3277</NoWarn>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <ItemGroup>
