@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>BIM Intelligence</Name>
+    <Assembly>BIMIntelligence.dll</Assembly>
+    <FullClassName>BIMIntelligence.App</FullClassName>
+    <ClientId>A1B2C3D4-E5F6-7890-ABCD-EF1234567890</ClientId>
+    <VendorId>BIMIntelligence</VendorId>
+    <VendorDescription>BIM Intelligence Revit Plugin</VendorDescription>
+  </AddIn>
+</RevitAddIns>
