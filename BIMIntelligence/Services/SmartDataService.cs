@@ -367,19 +367,86 @@ public static class SmartDataService
     // Private Helpers
     // ──────────────────────────────────────────────
 
+    /// <summary>
+    /// Resolves the level name for any Revit element by checking its actual
+    /// class type and using the correct built-in parameter for that type.
+    /// Revit stores level info differently per element type.
+    /// </summary>
     private static string GetElementLevel(Element elem, Document doc)
     {
-        var levelParam = elem.get_Parameter(BuiltInParameter.INSTANCE_REFERENCE_LEVEL_PARAM)
-                      ?? elem.get_Parameter(BuiltInParameter.FAMILY_LEVEL_PARAM)
-                      ?? elem.get_Parameter(BuiltInParameter.SCHEDULE_LEVEL_PARAM)
-                      ?? elem.get_Parameter(BuiltInParameter.RBS_START_LEVEL_PARAM);
-
-        if (levelParam != null && levelParam.StorageType == StorageType.ElementId)
+        // Step 1: Determine the correct BuiltInParameter based on element type
+        BuiltInParameter? levelBip = elem switch
         {
-            var levelId = levelParam.AsElementId();
-            return doc.GetElement(levelId)?.Name ?? "Unknown";
+            Room _                                          => BuiltInParameter.ROOM_LEVEL_ID,
+            Wall _                                          => BuiltInParameter.WALL_BASE_CONSTRAINT,
+            Floor _                                         => BuiltInParameter.LEVEL_PARAM,
+            Ceiling _                                       => BuiltInParameter.LEVEL_PARAM,
+            Autodesk.Revit.DB.Architecture.Stairs _         => BuiltInParameter.STAIRS_BASE_LEVEL_PARAM,
+            RoofBase _                                      => BuiltInParameter.ROOF_BASE_LEVEL_PARAM,
+            FamilyInstance _                                 => BuiltInParameter.FAMILY_LEVEL_PARAM,
+            Autodesk.Revit.DB.Mechanical.Duct _             => BuiltInParameter.RBS_START_LEVEL_PARAM,
+            Autodesk.Revit.DB.Plumbing.Pipe _               => BuiltInParameter.RBS_START_LEVEL_PARAM,
+            Autodesk.Revit.DB.Electrical.Conduit _          => BuiltInParameter.RBS_START_LEVEL_PARAM,
+            Autodesk.Revit.DB.Electrical.CableTray _        => BuiltInParameter.RBS_START_LEVEL_PARAM,
+            _                                               => null
+        };
+
+        // Step 2: Read the parameter
+        if (levelBip.HasValue)
+        {
+            var param = elem.get_Parameter(levelBip.Value);
+            if (param != null)
+            {
+                var name = ResolveLevelParam(param, doc);
+                if (name != null) return name;
+            }
         }
-        return levelParam?.AsValueString() ?? "Unknown";
+
+        // Step 3: Fallback — Element.LevelId (works for many element types)
+        if (elem.LevelId != null && elem.LevelId != ElementId.InvalidElementId)
+        {
+            var level = doc.GetElement(elem.LevelId);
+            if (level != null) return level.Name;
+        }
+
+        // Step 4: Last resort — try generic schedule level parameter
+        var scheduleLevel = elem.get_Parameter(BuiltInParameter.SCHEDULE_LEVEL_PARAM)
+                         ?? elem.get_Parameter(BuiltInParameter.INSTANCE_REFERENCE_LEVEL_PARAM);
+        if (scheduleLevel != null)
+        {
+            var name = ResolveLevelParam(scheduleLevel, doc);
+            if (name != null) return name;
+        }
+
+        return "Unknown";
+    }
+
+    /// <summary>
+    /// Resolves a level parameter value to a level name.
+    /// Handles both ElementId (reference to Level) and String storage types.
+    /// </summary>
+    private static string? ResolveLevelParam(Parameter param, Document doc)
+    {
+        if (param.StorageType == StorageType.ElementId)
+        {
+            var levelId = param.AsElementId();
+            if (levelId != ElementId.InvalidElementId)
+            {
+                var level = doc.GetElement(levelId);
+                if (level != null) return level.Name;
+            }
+        }
+        else if (param.StorageType == StorageType.String)
+        {
+            var val = param.AsString();
+            if (!string.IsNullOrEmpty(val)) return val;
+        }
+        else
+        {
+            var val = param.AsValueString();
+            if (!string.IsNullOrEmpty(val)) return val;
+        }
+        return null;
     }
 
     private static object? GetParameterDisplayValue(Parameter param, Document doc)

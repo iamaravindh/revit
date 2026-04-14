@@ -28,11 +28,28 @@ public static class RoomDataService
         foreach (var room in rooms)
         {
             var roomId = room.Id;
+
+            // Get level name — try direct property first, then parameter lookup
+            var levelName = room.Level?.Name;
+            if (string.IsNullOrEmpty(levelName))
+            {
+                var levelParam = room.get_Parameter(BuiltInParameter.ROOM_LEVEL_ID);
+                if (levelParam != null && levelParam.StorageType == StorageType.ElementId)
+                {
+                    var levelId = levelParam.AsElementId();
+                    levelName = doc.GetElement(levelId)?.Name;
+                }
+            }
+            if (string.IsNullOrEmpty(levelName))
+            {
+                levelName = room.get_Parameter(BuiltInParameter.LEVEL_NAME)?.AsString();
+            }
+
             results.Add(new RoomData
             {
                 RoomName = room.get_Parameter(BuiltInParameter.ROOM_NAME)?.AsString() ?? "Unknown",
                 RoomNumber = room.get_Parameter(BuiltInParameter.ROOM_NUMBER)?.AsString() ?? "",
-                Level = room.Level?.Name ?? "Unknown",
+                Level = levelName ?? "Unknown",
                 AreaSqM = Math.Round(room.Area * SqFtToSqM, 2),
                 DoorCount = doorsByRoom.GetValueOrDefault(roomId, 0),
                 WindowCount = windowsByRoom.GetValueOrDefault(roomId, 0)
