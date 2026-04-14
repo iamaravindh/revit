@@ -275,6 +275,18 @@ public static class RoomDataService
         var paramColumns = new HashSet<string>();
         var rows = new List<ExpandoObject>();
 
+        // If extracting Rooms, pre-compute door/window counts per room
+        bool isRoomCategory = categoryName == "Rooms";
+        Dictionary<ElementId, int>? doorsByRoom = null;
+        Dictionary<ElementId, int>? windowsByRoom = null;
+        if (isRoomCategory)
+        {
+            doorsByRoom = CountElementsByRoom(doc, BuiltInCategory.OST_Doors);
+            windowsByRoom = CountElementsByRoom(doc, BuiltInCategory.OST_Windows);
+            syntheticColumns.Add("Door Count");
+            syntheticColumns.Add("Window Count");
+        }
+
         foreach (var elem in elements)
         {
             dynamic row = new ExpandoObject();
@@ -297,6 +309,13 @@ public static class RoomDataService
             else
             {
                 dict["Level"] = levelParam?.AsValueString() ?? "";
+            }
+
+            // Add door/window counts for rooms
+            if (isRoomCategory)
+            {
+                dict["Door Count"] = doorsByRoom!.GetValueOrDefault(elem.Id, 0);
+                dict["Window Count"] = windowsByRoom!.GetValueOrDefault(elem.Id, 0);
             }
 
             // Read ALL parameters dynamically
