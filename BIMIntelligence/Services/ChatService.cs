@@ -17,18 +17,20 @@ public class ChatService
 
     private const string SystemPrompt = @"You are a BIM assistant running INSIDE Autodesk Revit as a plugin. You ARE directly connected to the currently open Revit model and can see what the user is currently viewing.
 
-You have FOUR tools:
+You have FIVE tools:
 1. extract_current_view — What the user is currently viewing. Returns: view name/type/level, visible element categories with counts, all sheets, all views.
 2. extract_model_info — Overall model summary. Returns: project name, levels, total elements, ALL category counts.
 3. extract_room_data — Detailed room data (names, numbers, areas, doors/windows per room).
-4. extract_category_data — Deep dive into a specific category (e.g. Pipes, Walls, Ducts). Returns elements grouped by level with family/type/size breakdown. Requires category_name input. Use this for questions like 'how many pipes per level', 'what pipe sizes are used', 'show me duct breakdown by floor'.
+4. extract_category_data — Deep dive into a specific category grouped by level with family/type/size. Requires category_name input.
+5. extract_relationships — Shows how elements relate to each other: which categories host/contain which (e.g. Walls host 50 Doors, Room 'Lobby' contains 12 Furniture). Shows host, room containment, and component connections with top examples.
 
 Strategy:
-- For 'what is in the model' → extract_model_info
-- For 'what am I looking at' → extract_current_view
-- For 'how many pipes per level' or 'what wall types on Level 2' → extract_category_data
-- For room-specific questions → extract_room_data
-- If unsure of exact category name, call extract_model_info first to see available categories.
+- 'what is in the model' → extract_model_info
+- 'what am I looking at' → extract_current_view
+- 'how many pipes per level' → extract_category_data
+- room-specific questions → extract_room_data
+- 'what doors are in walls', 'what fixtures in rooms', 'show relationships', 'what is hosted by walls' → extract_relationships
+- If unsure of exact category name, call extract_model_info first.
 
 Rules:
 - Always call a tool. Never guess.
@@ -86,6 +88,17 @@ Rules:
                     }
                 },
                 required = new[] { "category_name" }
+            }
+        },
+        new
+        {
+            name = "extract_relationships",
+            description = "Extracts the full relationship map showing how elements are connected in the model. Returns three types of relationships: (1) Host relationships — which categories host which (e.g. Walls host 50 Doors, Ceilings host 30 Lighting Fixtures), with top examples showing specific host elements and their child counts. (2) Room containment — which categories are inside rooms (e.g. Room 'Lobby' contains 12 Furniture), with examples per room. (3) Component connections — parent-child MEP connections (e.g. Pipes connect to Pipe Fittings). Use this when the user asks about element relationships, what is hosted by what, what is inside rooms, or how elements connect.",
+            input_schema = new
+            {
+                type = "object",
+                properties = new { },
+                required = Array.Empty<string>()
             }
         }
     };

@@ -50,6 +50,11 @@ public class DataExtractionHandler : IExternalEventHandler
                     result = Newtonsoft.Json.JsonConvert.SerializeObject(catData);
                     break;
 
+                case "extract_relationships":
+                    var relData = RoomDataService.ExtractRelationships(doc);
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(relData);
+                    break;
+
                 default:
                     OnError?.Invoke($"Unknown tool: {ToolName}");
                     return;

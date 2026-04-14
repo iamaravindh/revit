@@ -259,6 +259,103 @@ public static class RoomDataService
     }
 
     /// <summary>
+    /// Extracts the full relationship map of the model — which categories host/contain
+    /// which other categories, with counts. Used by chatbot to understand model structure.
+    /// </summary>
+    public static ModelRelationshipData ExtractRelationships(Document doc)
+    {
+        var data = new ModelRelationshipData();
+
+        var allInstances = new FilteredElementCollector(doc)
+            .WhereElementIsNotElementType()
+            .ToElements()
+            .OfType<FamilyInstance>()
+            .ToList();
+
+        foreach (var instance in allInstances)
+        {
+            var childCat = instance.Category?.Name;
+            if (string.IsNullOrEmpty(childCat)) continue;
+
+            // 1. Host relationship (Door hosted by Wall, Light hosted by Ceiling, etc.)
+            if (instance.Host != null)
+            {
+                var hostCat = instance.Host.Category?.Name ?? "Unknown";
+                var hostName = instance.Host.Name ?? "";
+                var key = $"{hostCat} → {childCat}";
+
+                if (!data.HostRelationships.ContainsKey(key))
+                    data.HostRelationships[key] = new RelationshipInfo { Parent = hostCat, Child = childCat };
+                data.HostRelationships[key].Count++;
+
+                // Track host element details
+                var hostId = instance.Host.Id.Value.ToString();
+                if (!data.HostRelationships[key].Examples.ContainsKey(hostId))
+                    data.HostRelationships[key].Examples[hostId] = new RelationshipExample
+                    {
+                        ParentName = hostName,
+                        ChildCount = 0
+                    };
+                data.HostRelationships[key].Examples[hostId].ChildCount++;
+            }
+
+            // 2. Room relationship (Furniture in Room, Fixture in Room, etc.)
+            var room = instance.Room;
+            if (room == null && instance.FromRoom != null) room = instance.FromRoom;
+            if (room != null)
+            {
+                var roomName = room.get_Parameter(BuiltInParameter.ROOM_NAME)?.AsString() ?? "Unknown";
+                var roomNumber = room.get_Parameter(BuiltInParameter.ROOM_NUMBER)?.AsString() ?? "";
+                var key = $"Rooms → {childCat}";
+
+                if (!data.RoomRelationships.ContainsKey(key))
+                    data.RoomRelationships[key] = new RelationshipInfo { Parent = "Rooms", Child = childCat };
+                data.RoomRelationships[key].Count++;
+
+                var roomId = room.Id.Value.ToString();
+                if (!data.RoomRelationships[key].Examples.ContainsKey(roomId))
+                    data.RoomRelationships[key].Examples[roomId] = new RelationshipExample
+                    {
+                        ParentName = $"{roomName} ({roomNumber})",
+                        ChildCount = 0
+                    };
+                data.RoomRelationships[key].Examples[roomId].ChildCount++;
+            }
+
+            // 3. SuperComponent relationship (fitting connected to pipe/duct)
+            if (instance.SuperComponent != null)
+            {
+                var parentCat = instance.SuperComponent.Category?.Name ?? "Unknown";
+                var key = $"{parentCat} → {childCat}";
+
+                if (!data.ComponentRelationships.ContainsKey(key))
+                    data.ComponentRelationships[key] = new RelationshipInfo { Parent = parentCat, Child = childCat };
+                data.ComponentRelationships[key].Count++;
+            }
+        }
+
+        // Sort and cap examples to top 5 per relationship
+        TrimExamples(data.HostRelationships);
+        TrimExamples(data.RoomRelationships);
+
+        return data;
+    }
+
+    private static void TrimExamples(Dictionary<string, RelationshipInfo> relationships)
+    {
+        foreach (var rel in relationships.Values)
+        {
+            if (rel.Examples.Count > 5)
+            {
+                rel.Examples = rel.Examples
+                    .OrderByDescending(e => e.Value.ChildCount)
+                    .Take(5)
+                    .ToDictionary(e => e.Key, e => e.Value);
+            }
+        }
+    }
+
+    /// <summary>
     /// Dynamically extracts ALL parameters for elements in a given category.
     /// Returns column names and rows as ExpandoObjects for WPF DataGrid binding.
     /// </summary>

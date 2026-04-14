@@ -93,3 +93,31 @@ public class CategoryElementSummary
     public string Type { get; set; } = string.Empty;
     public string Size { get; set; } = string.Empty;
 }
+
+// Relationship models for chatbot
+public class ModelRelationshipData
+{
+    /// <summary>Host relationships: Wall hosts Door, Ceiling hosts Light, etc.</summary>
+    public Dictionary<string, RelationshipInfo> HostRelationships { get; set; } = new();
+
+    /// <summary>Room containment: Room contains Furniture, Fixtures, etc.</summary>
+    public Dictionary<string, RelationshipInfo> RoomRelationships { get; set; } = new();
+
+    /// <summary>Component relationships: Pipe connects to Pipe Fitting, etc.</summary>
+    public Dictionary<string, RelationshipInfo> ComponentRelationships { get; set; } = new();
+}
+
+public class RelationshipInfo
+{
+    public string Parent { get; set; } = string.Empty;
+    public string Child { get; set; } = string.Empty;
+    public int Count { get; set; }
+    /// <summary>Top examples: parentId → { parentName, childCount }</summary>
+    public Dictionary<string, RelationshipExample> Examples { get; set; } = new();
+}
+
+public class RelationshipExample
+{
+    public string ParentName { get; set; } = string.Empty;
+    public int ChildCount { get; set; }
+}
