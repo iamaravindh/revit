@@ -64,3 +64,32 @@ public class CategoryElementData
     public List<string> Columns { get; set; } = new();
     public List<Dictionary<string, object?>> Rows { get; set; } = new();
 }
+
+// Lightweight models for chatbot (fast, small payload)
+public class CategoryChatData
+{
+    public string CategoryName { get; set; } = string.Empty;
+    public int TotalCount { get; set; }
+    public Dictionary<string, CategoryLevelSummary> ByLevel { get; set; } = new();
+}
+
+public class CategoryLevelSummary
+{
+    public int Count { get; set; }
+    public List<CategoryLevelGroup> Types { get; set; } = new();
+}
+
+public class CategoryLevelGroup
+{
+    public string Family { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
+    public string Size { get; set; } = string.Empty;
+    public int Count { get; set; }
+}
+
+public class CategoryElementSummary
+{
+    public string Family { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
+    public string Size { get; set; } = string.Empty;
+}

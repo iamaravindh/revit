@@ -10,6 +10,7 @@ namespace BIMIntelligence.Services;
 public class DataExtractionHandler : IExternalEventHandler
 {
     public string ToolName { get; set; } = "extract_room_data";
+    public string CategoryFilter { get; set; } = "";
     public Action<string>? OnDataExtracted { get; set; }
     public Action<string>? OnError { get; set; }
 
@@ -42,6 +43,11 @@ public class DataExtractionHandler : IExternalEventHandler
                 case "extract_current_view":
                     var viewData = RoomDataService.ExtractActiveView(uidoc);
                     result = Newtonsoft.Json.JsonConvert.SerializeObject(viewData);
+                    break;
+
+                case "extract_category_data":
+                    var catData = RoomDataService.ExtractCategoryForChat(doc, CategoryFilter);
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(catData);
                     break;
 
                 default:

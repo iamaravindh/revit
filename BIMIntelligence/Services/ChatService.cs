@@ -17,18 +17,23 @@ public class ChatService
 
     private const string SystemPrompt = @"You are a BIM assistant running INSIDE Autodesk Revit as a plugin. You ARE directly connected to the currently open Revit model and can see what the user is currently viewing.
 
-You have THREE tools:
-1. extract_current_view — Use this when the user asks about what they're currently looking at, the active view, visible elements, sheets, or floor plans. Returns: active view name/type/level, all elements visible in the current view with category counts, list of ALL sheets, and list of ALL views in the model.
-2. extract_model_info — Use this for general model questions (total element counts, levels, overall structure). Returns: project name, all levels, total elements, and ALL category counts across the entire model.
-3. extract_room_data — Use ONLY for detailed room-specific questions (names, numbers, areas, per-room door/window counts).
+You have FOUR tools:
+1. extract_current_view — What the user is currently viewing. Returns: view name/type/level, visible element categories with counts, all sheets, all views.
+2. extract_model_info — Overall model summary. Returns: project name, levels, total elements, ALL category counts.
+3. extract_room_data — Detailed room data (names, numbers, areas, doors/windows per room).
+4. extract_category_data — Deep dive into a specific category (e.g. Pipes, Walls, Ducts). Returns elements grouped by level with family/type/size breakdown. Requires category_name input. Use this for questions like 'how many pipes per level', 'what pipe sizes are used', 'show me duct breakdown by floor'.
+
+Strategy:
+- For 'what is in the model' → extract_model_info
+- For 'what am I looking at' → extract_current_view
+- For 'how many pipes per level' or 'what wall types on Level 2' → extract_category_data
+- For room-specific questions → extract_room_data
+- If unsure of exact category name, call extract_model_info first to see available categories.
 
 Rules:
-- Always call a tool first. Never guess or make up data.
-- If the user asks about what they see, the current view, a specific sheet, or floor plan, use extract_current_view.
-- You ARE directly connected to the open Revit model. Do NOT say you cannot access it.
-- Never say you need 'direct integration' or 'access to the model file' — you already have it.
-- Be concise. Only mention categories with count > 0.
-- Elevations are in meters. Room areas are in square meters (m²).";
+- Always call a tool. Never guess.
+- You ARE connected to the live Revit model. Never say otherwise.
+- Be concise and confident.";
 
     private static readonly object[] ToolDefinitions = new object[]
     {
@@ -63,6 +68,24 @@ Rules:
                 type = "object",
                 properties = new { },
                 required = Array.Empty<string>()
+            }
+        },
+        new
+        {
+            name = "extract_category_data",
+            description = "Extracts detailed data for a specific element category, grouped by level. Returns total count, and for each level: element count and breakdown by family/type/size. Use this when the user asks about specific elements like pipes, ducts, walls, doors, columns, beams, fixtures etc. — especially questions about which level they are on, how many per level, what types/sizes are used. You MUST provide the category_name input.",
+            input_schema = new
+            {
+                type = "object",
+                properties = new
+                {
+                    category_name = new
+                    {
+                        type = "string",
+                        description = "The exact Revit category name (e.g. 'Pipes', 'Walls', 'Doors', 'Structural Columns', 'Ducts', 'Plumbing Fixtures', 'Lighting Fixtures'). Use extract_model_info first if you don't know the exact category name."
+                    }
+                },
+                required = new[] { "category_name" }
             }
         }
     };
@@ -151,7 +174,8 @@ Rules:
         string userMessage,
         string toolUseId,
         string toolName,
-        string toolResult)
+        string toolResult,
+        JObject? toolInput = null)
     {
         var messages = new List<object>();
         foreach (var msg in conversationHistory)
@@ -173,7 +197,7 @@ Rules:
                     type = "tool_use",
                     id = toolUseId,
                     name = toolName,
-                    input = new { }
+                    input = toolInput ?? new JObject()
                 }
             }
         });
@@ -237,7 +261,8 @@ Rules:
                 {
                     Type = ChatResponseType.ToolUse,
                     ToolUseId = block["id"]?.ToString() ?? "",
-                    ToolName = block["name"]?.ToString() ?? ""
+                    ToolName = block["name"]?.ToString() ?? "",
+                    ToolInput = block["input"] as JObject
                 };
             }
         }
@@ -267,4 +292,5 @@ public class ChatResponse
     public string Text { get; set; } = string.Empty;
     public string ToolUseId { get; set; } = string.Empty;
     public string ToolName { get; set; } = string.Empty;
+    public JObject? ToolInput { get; set; }
 }

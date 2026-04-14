@@ -171,6 +171,94 @@ public static class RoomDataService
     }
 
     /// <summary>
+    /// Lightweight extraction for chatbot — key fields only, capped at 500 elements.
+    /// Returns a JSON-friendly summary grouped by level.
+    /// </summary>
+    public static CategoryChatData ExtractCategoryForChat(Document doc, string categoryName)
+    {
+        var elements = new FilteredElementCollector(doc)
+            .WhereElementIsNotElementType()
+            .ToElements()
+            .Where(e => e.Category?.Name == categoryName)
+            .ToList();
+
+        var data = new CategoryChatData
+        {
+            CategoryName = categoryName,
+            TotalCount = elements.Count
+        };
+
+        // Group by level
+        var byLevel = new Dictionary<string, List<CategoryElementSummary>>();
+        var capped = elements.Take(500).ToList();
+
+        foreach (var elem in capped)
+        {
+            // Get level
+            var levelParam = elem.get_Parameter(BuiltInParameter.INSTANCE_REFERENCE_LEVEL_PARAM)
+                          ?? elem.get_Parameter(BuiltInParameter.FAMILY_LEVEL_PARAM)
+                          ?? elem.get_Parameter(BuiltInParameter.SCHEDULE_LEVEL_PARAM)
+                          ?? elem.get_Parameter(BuiltInParameter.RBS_START_LEVEL_PARAM);
+            string levelName = "Unknown";
+            if (levelParam != null && levelParam.StorageType == StorageType.ElementId)
+            {
+                var levelId = levelParam.AsElementId();
+                levelName = doc.GetElement(levelId)?.Name ?? "Unknown";
+            }
+            else if (levelParam != null)
+            {
+                levelName = levelParam.AsValueString() ?? "Unknown";
+            }
+
+            var family = elem.get_Parameter(BuiltInParameter.ELEM_FAMILY_PARAM)?.AsValueString() ?? "";
+            var type = elem.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM)?.AsValueString() ?? "";
+
+            // Get a few key dimension/size parameters
+            var size = elem.get_Parameter(BuiltInParameter.RBS_PIPE_DIAMETER_PARAM)?.AsValueString()
+                    ?? elem.get_Parameter(BuiltInParameter.DOOR_WIDTH)?.AsValueString()
+                    ?? elem.get_Parameter(BuiltInParameter.WINDOW_WIDTH)?.AsValueString()
+                    ?? "";
+
+            if (!byLevel.ContainsKey(levelName))
+                byLevel[levelName] = new List<CategoryElementSummary>();
+
+            byLevel[levelName].Add(new CategoryElementSummary
+            {
+                Family = family,
+                Type = type,
+                Size = size
+            });
+        }
+
+        // Summarize per level: count by family+type
+        foreach (var (level, elems) in byLevel)
+        {
+            var grouped = elems.GroupBy(e => $"{e.Family}|{e.Type}|{e.Size}")
+                .Select(g =>
+                {
+                    var first = g.First();
+                    return new CategoryLevelGroup
+                    {
+                        Family = first.Family,
+                        Type = first.Type,
+                        Size = first.Size,
+                        Count = g.Count()
+                    };
+                })
+                .OrderByDescending(g => g.Count)
+                .ToList();
+
+            data.ByLevel[level] = new CategoryLevelSummary
+            {
+                Count = elems.Count,
+                Types = grouped
+            };
+        }
+
+        return data;
+    }
+
+    /// <summary>
     /// Dynamically extracts ALL parameters for elements in a given category.
     /// Returns column names and rows as ExpandoObjects for WPF DataGrid binding.
     /// </summary>

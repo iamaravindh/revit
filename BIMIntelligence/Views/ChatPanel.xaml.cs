@@ -108,6 +108,13 @@ public partial class ChatPanel : Page, IDockablePaneProvider
                 // Set which tool to run
                 App.DataExtractionHandler.ToolName = response.ToolName;
 
+                // Pass category_name if the tool requires it
+                if (response.ToolName == "extract_category_data" && response.ToolInput != null)
+                {
+                    App.DataExtractionHandler.CategoryFilter =
+                        response.ToolInput["category_name"]?.ToString() ?? "";
+                }
+
                 App.DataExtractionHandler.OnDataExtracted = (jsonData) =>
                 {
                     taskSource.TrySetResult(jsonData);
@@ -126,7 +133,7 @@ public partial class ChatPanel : Page, IDockablePaneProvider
 
                 // Step 3: Send tool result back to Claude
                 var finalResponse = await _chatService.SendToolResultAsync(
-                    _conversationHistory, question, response.ToolUseId, response.ToolName, toolResult);
+                    _conversationHistory, question, response.ToolUseId, response.ToolName, toolResult, response.ToolInput);
 
                 UpdateLastBotMessage(finalResponse.Text);
 
