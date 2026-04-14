@@ -35,7 +35,19 @@ public class App : IExternalApplication
         };
         panel.AddItem(extractBtnData);
 
-        // 3. Add "AI Chat" button
+        // 3. Add "Smart Extract" button
+        var smartExtractBtnData = new PushButtonData(
+            "SmartExtractor",
+            "Smart\nExtract",
+            dllPath,
+            "BIMIntelligence.Commands.SmartExtractCommand"
+        )
+        {
+            ToolTip = "Scan the model and extract data for any element category dynamically"
+        };
+        panel.AddItem(smartExtractBtnData);
+
+        // 4. Add "AI Chat" button
         var chatBtnData = new PushButtonData(
             "ToggleChat",
             "AI\nChat",

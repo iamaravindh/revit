@@ -1,3 +1,4 @@
+using System.Dynamic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using BIMIntelligence.Models;
@@ -167,6 +168,116 @@ public static class RoomDataService
         }).ToList();
 
         return data;
+    }
+
+    /// <summary>
+    /// Dynamically extracts ALL parameters for elements in a given category.
+    /// Returns column names and rows as ExpandoObjects for WPF DataGrid binding.
+    /// </summary>
+    public static (List<string> columns, List<ExpandoObject> rows) ExtractCategoryElements(Document doc, string categoryName)
+    {
+        var elements = new FilteredElementCollector(doc)
+            .WhereElementIsNotElementType()
+            .ToElements()
+            .Where(e => e.Category?.Name == categoryName)
+            .ToList();
+
+        // Synthetic columns always come first
+        var syntheticColumns = new List<string> { "Element Id", "Family", "Type", "Level" };
+        var paramColumns = new HashSet<string>();
+        var rows = new List<ExpandoObject>();
+
+        foreach (var elem in elements)
+        {
+            dynamic row = new ExpandoObject();
+            var dict = (IDictionary<string, object?>)row;
+
+            // Synthetic values
+            dict["Element Id"] = elem.Id.Value;
+            dict["Family"] = elem.get_Parameter(BuiltInParameter.ELEM_FAMILY_PARAM)?.AsValueString() ?? "";
+            dict["Type"] = elem.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM)?.AsValueString() ?? "";
+
+            // Level
+            var levelParam = elem.get_Parameter(BuiltInParameter.INSTANCE_REFERENCE_LEVEL_PARAM)
+                          ?? elem.get_Parameter(BuiltInParameter.FAMILY_LEVEL_PARAM)
+                          ?? elem.get_Parameter(BuiltInParameter.SCHEDULE_LEVEL_PARAM);
+            if (levelParam != null && levelParam.StorageType == StorageType.ElementId)
+            {
+                var levelId = levelParam.AsElementId();
+                dict["Level"] = doc.GetElement(levelId)?.Name ?? "";
+            }
+            else
+            {
+                dict["Level"] = levelParam?.AsValueString() ?? "";
+            }
+
+            // Read ALL parameters dynamically
+            foreach (Parameter param in elem.Parameters)
+            {
+                var name = param.Definition?.Name;
+                if (string.IsNullOrWhiteSpace(name)) continue;
+                if (syntheticColumns.Contains(name)) continue; // skip duplicates
+
+                paramColumns.Add(name);
+                dict[name] = GetParameterDisplayValue(param, doc);
+            }
+
+            rows.Add((ExpandoObject)row);
+        }
+
+        // Build final column order: synthetic first, then alphabetical parameter columns
+        var sortedParamColumns = paramColumns.OrderBy(c => c).ToList();
+        var allColumns = new List<string>(syntheticColumns);
+        allColumns.AddRange(sortedParamColumns);
+
+        // Ensure all rows have all columns (fill missing with empty string)
+        foreach (var row in rows)
+        {
+            var dict = (IDictionary<string, object?>)row;
+            foreach (var col in allColumns)
+            {
+                if (!dict.ContainsKey(col))
+                    dict[col] = "";
+            }
+        }
+
+        return (allColumns, rows);
+    }
+
+    /// <summary>
+    /// Gets the display value of a parameter, converting units as needed.
+    /// </summary>
+    private static object? GetParameterDisplayValue(Parameter param, Document doc)
+    {
+        if (!param.HasValue) return "";
+
+        switch (param.StorageType)
+        {
+            case StorageType.String:
+                return param.AsString() ?? "";
+            case StorageType.Integer:
+                // Check if it's a Yes/No parameter
+                if (param.Definition is InternalDefinition def)
+                {
+                    try
+                    {
+                        var spec = def.GetDataType();
+                        if (spec == SpecTypeId.Boolean.YesNo)
+                            return param.AsInteger() == 1 ? "Yes" : "No";
+                    }
+                    catch { }
+                }
+                return param.AsInteger();
+            case StorageType.Double:
+                // Use AsValueString for proper unit conversion (shows what user sees in Revit)
+                return param.AsValueString() ?? Math.Round(param.AsDouble(), 4).ToString();
+            case StorageType.ElementId:
+                var id = param.AsElementId();
+                if (id == ElementId.InvalidElementId) return "";
+                return doc.GetElement(id)?.Name ?? id.Value.ToString();
+            default:
+                return "";
+        }
     }
 
     /// <summary>

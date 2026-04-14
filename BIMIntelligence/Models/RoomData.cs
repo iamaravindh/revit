@@ -56,3 +56,11 @@ public class ViewInfo
     public string ViewType { get; set; } = string.Empty;
     public string LevelName { get; set; } = string.Empty;
 }
+
+public class CategoryElementData
+{
+    public string CategoryName { get; set; } = string.Empty;
+    public int ElementCount { get; set; }
+    public List<string> Columns { get; set; } = new();
+    public List<Dictionary<string, object?>> Rows { get; set; } = new();
+}
