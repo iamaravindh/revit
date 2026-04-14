@@ -70,9 +70,10 @@ BIMIntelligence/
 ## Setup Instructions
 
 ### Prerequisites
-- Autodesk Revit 2027
-- .NET 10.0 SDK
-- Anthropic API key ([console.anthropic.com](https://console.anthropic.com))
+- **Autodesk Revit 2027** (v27.0)
+- **.NET 10.0 SDK** (v10.0.201)
+- **Visual Studio 2022** (Community edition or higher)
+- **Anthropic API key** ([console.anthropic.com](https://console.anthropic.com))
 
 ### Installation
 
@@ -121,10 +122,31 @@ The `rac_advanced_sample_project.rvt` is also included in the repository for ref
 - Room containment detected via `FamilyInstance.Room` / `FamilyInstance.FromRoom`
 - MEP connections detected via `FamilyInstance.SuperComponent`
 
+## Exported Data
+
+All exported outputs are in the `extracts/` folder:
+
+| File | Source | Description |
+|------|--------|-------------|
+| `room_data.json` | Extract Rooms | Room data in JSON (name, number, level, area, doors, windows) |
+| `room_data_non_smart.json` | Extract Rooms | Plain room extraction for comparison |
+| `Rooms_data.csv` | Extract Rooms | Room data in CSV format |
+| `Rooms_data_smart.csv` | Smart Extract | Rooms with ALL parameters (38+ fields) |
+| `Pipes_data.json` | Smart Extract | Pipe data with full parameters |
+
 ## Tech Stack
 
-- **C# / .NET 10.0** — matching Revit 2027's runtime
-- **WPF** — DataGrid panels, dockable chat panel, dynamic column generation
-- **Revit API** — FilteredElementCollector, Room, FamilyInstance, Level, View, ViewSheet, ExternalEvent
-- **Anthropic Claude Sonnet 4** — LLM with tool calling for real-time model queries
-- **Newtonsoft.Json** — JSON serialization for API and exports
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| **Autodesk Revit** | 2027 (v27.0) | BIM platform |
+| **C# / .NET** | 10.0 (SDK 10.0.201) | Target framework matching Revit 2027 |
+| **WPF** | .NET 10.0 | DataGrid panels, dockable chat, dynamic columns |
+| **Revit API** | 2027 | FilteredElementCollector, Room, FamilyInstance, Level, ExternalEvent |
+| **Anthropic Claude** | Sonnet 4 | LLM with tool calling for real-time model queries |
+| **Newtonsoft.Json** | 13.0.3 | JSON serialization for API and exports |
+
+## Repository
+
+```
+https://github.com/iamaravindh/revit
+```
