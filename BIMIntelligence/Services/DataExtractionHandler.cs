@@ -5,17 +5,21 @@ using BIMIntelligence.Models;
 namespace BIMIntelligence.Services;
 
 /// <summary>
-/// ExternalEvent handler that runs RoomDataService on Revit's main thread.
+/// ExternalEvent handler that runs data extraction on Revit's main thread.
 /// The chatbot triggers this via ExternalEvent.Raise(), and Revit calls Execute()
 /// on its own thread where API calls are safe.
 /// </summary>
 public class DataExtractionHandler : IExternalEventHandler
 {
     /// <summary>
-    /// Callback to deliver the extracted data back to the caller (chat panel).
-    /// Set this before calling ExternalEvent.Raise().
+    /// Which tool to execute. Set before calling Raise().
     /// </summary>
-    public Action<List<RoomData>>? OnDataExtracted { get; set; }
+    public string ToolName { get; set; } = "extract_room_data";
+
+    /// <summary>
+    /// Callback to deliver the extracted data as JSON string.
+    /// </summary>
+    public Action<string>? OnDataExtracted { get; set; }
 
     /// <summary>
     /// Callback for errors during extraction.
@@ -33,8 +37,25 @@ public class DataExtractionHandler : IExternalEventHandler
                 return;
             }
 
-            var roomData = RoomDataService.ExtractAll(doc);
-            OnDataExtracted?.Invoke(roomData);
+            string result;
+            switch (ToolName)
+            {
+                case "extract_room_data":
+                    var roomData = RoomDataService.ExtractAll(doc);
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(roomData);
+                    break;
+
+                case "extract_model_info":
+                    var summary = RoomDataService.ExtractModelSummary(doc);
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(summary);
+                    break;
+
+                default:
+                    OnError?.Invoke($"Unknown tool: {ToolName}");
+                    return;
+            }
+
+            OnDataExtracted?.Invoke(result);
         }
         catch (Exception ex)
         {

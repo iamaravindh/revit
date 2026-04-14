@@ -100,14 +100,17 @@ public partial class ChatPanel : Page, IDockablePaneProvider
 
             if (response.Type == ChatResponseType.ToolUse)
             {
-                // Step 2: Claude wants to extract room data — run it on Revit's thread
-                UpdateLastBotMessage("Extracting data from model...");
+                // Step 2: Claude wants data — run extraction on Revit's thread
+                UpdateLastBotMessage($"Extracting data from model...");
 
-                var taskSource = new TaskCompletionSource<List<RoomData>>();
+                var taskSource = new TaskCompletionSource<string>();
 
-                App.DataExtractionHandler.OnDataExtracted = (data) =>
+                // Set which tool to run
+                App.DataExtractionHandler.ToolName = response.ToolName;
+
+                App.DataExtractionHandler.OnDataExtracted = (jsonData) =>
                 {
-                    taskSource.TrySetResult(data);
+                    taskSource.TrySetResult(jsonData);
                 };
 
                 App.DataExtractionHandler.OnError = (error) =>
@@ -119,12 +122,11 @@ public partial class ChatPanel : Page, IDockablePaneProvider
                 App.DataExtractionEvent.Raise();
 
                 // Wait for the extraction to complete
-                var roomData = await taskSource.Task;
+                var toolResult = await taskSource.Task;
 
                 // Step 3: Send tool result back to Claude
-                var toolResult = JsonConvert.SerializeObject(roomData);
                 var finalResponse = await _chatService.SendToolResultAsync(
-                    _conversationHistory, question, response.ToolUseId, toolResult);
+                    _conversationHistory, question, response.ToolUseId, response.ToolName, toolResult);
 
                 UpdateLastBotMessage(finalResponse.Text);
 

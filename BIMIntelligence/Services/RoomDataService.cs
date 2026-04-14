@@ -7,10 +7,10 @@ namespace BIMIntelligence.Services;
 public static class RoomDataService
 {
     private const double SqFtToSqM = 0.092903;
+    private const double FtToM = 0.3048;
 
     public static List<RoomData> ExtractAll(Document doc)
     {
-        // Step 1: Collect all rooms with area > 0 (skip unplaced/unbounded)
         var rooms = new FilteredElementCollector(doc)
             .OfCategory(BuiltInCategory.OST_Rooms)
             .WhereElementIsNotElementType()
@@ -18,13 +18,9 @@ public static class RoomDataService
             .Where(r => r.Area > 0)
             .ToList();
 
-        // Step 2: Count doors per room
         var doorsByRoom = CountElementsByRoom(doc, BuiltInCategory.OST_Doors);
-
-        // Step 3: Count windows per room
         var windowsByRoom = CountElementsByRoom(doc, BuiltInCategory.OST_Windows);
 
-        // Step 4: Build results
         var results = new List<RoomData>();
         foreach (var room in rooms)
         {
@@ -41,6 +37,85 @@ public static class RoomDataService
         }
 
         return results;
+    }
+
+    public static List<LevelData> ExtractLevels(Document doc)
+    {
+        var levels = new FilteredElementCollector(doc)
+            .OfClass(typeof(Level))
+            .Cast<Level>()
+            .OrderBy(l => l.Elevation)
+            .ToList();
+
+        return levels.Select(l => new LevelData
+        {
+            Name = l.Name,
+            Elevation = Math.Round(l.Elevation * FtToM, 2)
+        }).ToList();
+    }
+
+    /// <summary>
+    /// Dynamically scans ALL element instances in the model, groups by category name,
+    /// and returns counts. This captures every Revit category automatically —
+    /// architectural, structural, MEP, electrical, plumbing, etc.
+    /// </summary>
+    public static ModelSummary ExtractModelSummary(Document doc)
+    {
+        var summary = new ModelSummary
+        {
+            ProjectName = doc.Title,
+            FilePath = doc.PathName
+        };
+
+        // Get ALL element instances in the model (not types)
+        var allElements = new FilteredElementCollector(doc)
+            .WhereElementIsNotElementType()
+            .ToElements();
+
+        var categoryCounts = new Dictionary<string, int>();
+
+        foreach (var elem in allElements)
+        {
+            // Skip elements without a category
+            var cat = elem.Category;
+            if (cat == null || string.IsNullOrWhiteSpace(cat.Name))
+                continue;
+
+            // Skip internal/system categories (negative IDs are internal)
+            if (cat.Id.Value < 0 && !IsUserFacingCategory(cat))
+                continue;
+
+            var catName = cat.Name;
+            categoryCounts[catName] = categoryCounts.GetValueOrDefault(catName, 0) + 1;
+        }
+
+        // Sort by count descending
+        summary.CategoryCounts = categoryCounts
+            .OrderByDescending(kv => kv.Value)
+            .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+        // Levels detail
+        summary.Levels = ExtractLevels(doc);
+        summary.TotalElements = allElements.Count;
+
+        return summary;
+    }
+
+    /// <summary>
+    /// Checks if a built-in category is user-facing (visible in schedules/browsers).
+    /// We include all categories that have a valid CategoryType of Model or Annotation.
+    /// </summary>
+    private static bool IsUserFacingCategory(Category cat)
+    {
+        try
+        {
+            return cat.CategoryType == CategoryType.Model
+                || cat.CategoryType == CategoryType.AnalyticalModel;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static Dictionary<ElementId, int> CountElementsByRoom(Document doc, BuiltInCategory category)
