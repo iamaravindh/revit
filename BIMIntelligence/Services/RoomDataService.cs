@@ -275,16 +275,14 @@ public static class RoomDataService
         var paramColumns = new HashSet<string>();
         var rows = new List<ExpandoObject>();
 
-        // If extracting Rooms, pre-compute door/window counts per room
-        bool isRoomCategory = categoryName == "Rooms";
-        Dictionary<ElementId, int>? doorsByRoom = null;
-        Dictionary<ElementId, int>? windowsByRoom = null;
-        if (isRoomCategory)
+        // Auto-detect relationships: find all elements hosted by or linked to this category
+        var elementIds = new HashSet<ElementId>(elements.Select(e => e.Id));
+        var hostedCounts = DetectRelatedElements(doc, elements, elementIds);
+
+        // Add relationship columns to synthetic columns
+        foreach (var relCategory in hostedCounts.Keys.OrderBy(k => k))
         {
-            doorsByRoom = CountElementsByRoom(doc, BuiltInCategory.OST_Doors);
-            windowsByRoom = CountElementsByRoom(doc, BuiltInCategory.OST_Windows);
-            syntheticColumns.Add("Door Count");
-            syntheticColumns.Add("Window Count");
+            syntheticColumns.Add($"{relCategory} Count");
         }
 
         foreach (var elem in elements)
@@ -311,11 +309,11 @@ public static class RoomDataService
                 dict["Level"] = levelParam?.AsValueString() ?? "";
             }
 
-            // Add door/window counts for rooms
-            if (isRoomCategory)
+            // Add auto-detected relationship counts
+            foreach (var relCategory in hostedCounts.Keys.OrderBy(k => k))
             {
-                dict["Door Count"] = doorsByRoom!.GetValueOrDefault(elem.Id, 0);
-                dict["Window Count"] = windowsByRoom!.GetValueOrDefault(elem.Id, 0);
+                var countsForCategory = hostedCounts[relCategory];
+                dict[$"{relCategory} Count"] = countsForCategory.GetValueOrDefault(elem.Id, 0);
             }
 
             // Read ALL parameters dynamically
@@ -412,6 +410,74 @@ public static class RoomDataService
             default:
                 return "";
         }
+    }
+
+    /// <summary>
+    /// Auto-detects related/hosted/linked elements for a set of parent elements.
+    /// For Rooms: finds doors, windows, furniture, fixtures linked via FromRoom/ToRoom
+    /// For Walls: finds hosted doors, windows, embedded elements
+    /// For any element: finds elements hosted by it via Host property
+    /// Returns: { "Doors" => { parentId => count }, "Windows" => { parentId => count }, ... }
+    /// </summary>
+    private static Dictionary<string, Dictionary<ElementId, int>> DetectRelatedElements(
+        Document doc, List<Element> parentElements, HashSet<ElementId> parentIds)
+    {
+        var result = new Dictionary<string, Dictionary<ElementId, int>>();
+        if (parentElements.Count == 0) return result;
+
+        // Check if parents are Rooms — use FromRoom/ToRoom relationship
+        bool parentsAreRooms = parentElements[0].Category?.Id.Value == (long)BuiltInCategory.OST_Rooms;
+
+        // Scan all FamilyInstances for relationships
+        var allInstances = new FilteredElementCollector(doc)
+            .WhereElementIsNotElementType()
+            .ToElements()
+            .OfType<FamilyInstance>()
+            .ToList();
+
+        foreach (var instance in allInstances)
+        {
+            var childCatName = instance.Category?.Name;
+            if (string.IsNullOrEmpty(childCatName)) continue;
+
+            // Skip if child is same category as parent
+            if (parentElements.Count > 0 && instance.Category?.Id == parentElements[0].Category?.Id)
+                continue;
+
+            ElementId? linkedParentId = null;
+
+            if (parentsAreRooms)
+            {
+                // Room relationship via FromRoom/ToRoom
+                if (instance.FromRoom != null && parentIds.Contains(instance.FromRoom.Id))
+                    linkedParentId = instance.FromRoom.Id;
+                else if (instance.ToRoom != null && parentIds.Contains(instance.ToRoom.Id))
+                    linkedParentId = instance.ToRoom.Id;
+                else if (instance.Room != null && parentIds.Contains(instance.Room.Id))
+                    linkedParentId = instance.Room.Id;
+            }
+            else
+            {
+                // Host relationship — element hosted by parent (e.g. door hosted by wall)
+                var hostId = instance.Host?.Id;
+                if (hostId != null && parentIds.Contains(hostId))
+                    linkedParentId = hostId;
+            }
+
+            if (linkedParentId != null)
+            {
+                if (!result.ContainsKey(childCatName))
+                    result[childCatName] = new Dictionary<ElementId, int>();
+
+                result[childCatName][linkedParentId] =
+                    result[childCatName].GetValueOrDefault(linkedParentId, 0) + 1;
+            }
+        }
+
+        // Only keep relationships where at least some parents have children
+        // (removes noise from categories with 0 links)
+        return result.Where(kv => kv.Value.Values.Sum() > 0)
+            .ToDictionary(kv => kv.Key, kv => kv.Value);
     }
 
     /// <summary>
