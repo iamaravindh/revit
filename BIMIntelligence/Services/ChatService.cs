@@ -15,15 +15,17 @@ public class ChatService
     // Switch back when Sonnet 4 is available:
     // "claude-sonnet-4-20250514"
 
-    private const string SystemPrompt = @"You are a BIM assistant running INSIDE Autodesk Revit as a plugin. You ARE directly connected to the currently open Revit model. Your tools extract LIVE data from the active Revit document — this is real data, not a simulation.
+    private const string SystemPrompt = @"You are a BIM assistant running INSIDE Autodesk Revit as a plugin. You ARE directly connected to the currently open Revit model and can see what the user is currently viewing.
 
-You have TWO tools:
-1. extract_model_info — Use this FIRST for ANY question. It scans EVERY element in the currently open model and returns: project name, all levels with elevations, total element count, and ALL category names with counts. This is LIVE data from the open Revit file.
-2. extract_room_data — Use ONLY for detailed room-specific questions (names, numbers, areas, per-room door/window counts).
+You have THREE tools:
+1. extract_current_view — Use this when the user asks about what they're currently looking at, the active view, visible elements, sheets, or floor plans. Returns: active view name/type/level, all elements visible in the current view with category counts, list of ALL sheets, and list of ALL views in the model.
+2. extract_model_info — Use this for general model questions (total element counts, levels, overall structure). Returns: project name, all levels, total elements, and ALL category counts across the entire model.
+3. extract_room_data — Use ONLY for detailed room-specific questions (names, numbers, areas, per-room door/window counts).
 
 Rules:
 - Always call a tool first. Never guess or make up data.
-- The data you receive IS from the user's currently open Revit model. Do NOT say you cannot access the model — you already have access through your tools.
+- If the user asks about what they see, the current view, a specific sheet, or floor plan, use extract_current_view.
+- You ARE directly connected to the open Revit model. Do NOT say you cannot access it.
 - Never say you need 'direct integration' or 'access to the model file' — you already have it.
 - Be concise. Only mention categories with count > 0.
 - Elevations are in meters. Room areas are in square meters (m²).";
@@ -32,8 +34,19 @@ Rules:
     {
         new
         {
+            name = "extract_current_view",
+            description = "Extracts information about what the user is currently viewing in Revit. Returns: active view name, view type (FloorPlan, Section, 3D, Sheet, etc.), associated level, scale, detail level, count and categories of all elements visible in the current view, list of ALL sheets in the model, and list of ALL views. Use this when the user asks about their current view, visible elements, sheets, floor plans, or what they're looking at.",
+            input_schema = new
+            {
+                type = "object",
+                properties = new { },
+                required = Array.Empty<string>()
+            }
+        },
+        new
+        {
             name = "extract_model_info",
-            description = "Extracts a comprehensive summary of the Revit model by dynamically scanning ALL elements. Returns: project name, file path, total element count, all levels with elevations, and a dictionary of every category found with instance counts. This automatically captures all Revit categories (architectural, structural, MEP, electrical, plumbing, mechanical, etc.) without needing to know them in advance. Use this for ANY question about the building.",
+            description = "Extracts a comprehensive summary of the entire Revit model by dynamically scanning ALL elements. Returns: project name, file path, total element count, all levels with elevations, and a dictionary of every category found with instance counts. Use this for general questions about the building model.",
             input_schema = new
             {
                 type = "object",
@@ -44,7 +57,7 @@ Rules:
         new
         {
             name = "extract_room_data",
-            description = "Extracts detailed room data from the Revit model. Returns each room's name, number, level, area (in square meters), door count, and window count. Use this only when the user asks specifically about room details, room areas, or per-room door/window counts.",
+            description = "Extracts detailed room data. Returns each room's name, number, level, area (m²), door count, and window count. Use only for room-specific questions.",
             input_schema = new
             {
                 type = "object",

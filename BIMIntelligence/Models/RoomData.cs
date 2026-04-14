@@ -30,3 +30,29 @@ public class ModelSummary
     /// </summary>
     public Dictionary<string, int> CategoryCounts { get; set; } = new();
 }
+
+public class ActiveViewData
+{
+    public string ViewName { get; set; } = string.Empty;
+    public string ViewType { get; set; } = string.Empty;
+    public string LevelName { get; set; } = string.Empty;
+    public int Scale { get; set; }
+    public string DetailLevel { get; set; } = string.Empty;
+    public int VisibleElementCount { get; set; }
+    public Dictionary<string, int> VisibleCategoryCounts { get; set; } = new();
+    public List<SheetInfo> Sheets { get; set; } = new();
+    public List<ViewInfo> Views { get; set; } = new();
+}
+
+public class SheetInfo
+{
+    public string SheetNumber { get; set; } = string.Empty;
+    public string SheetName { get; set; } = string.Empty;
+}
+
+public class ViewInfo
+{
+    public string Name { get; set; } = string.Empty;
+    public string ViewType { get; set; } = string.Empty;
+    public string LevelName { get; set; } = string.Empty;
+}

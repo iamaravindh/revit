@@ -102,6 +102,74 @@ public static class RoomDataService
     }
 
     /// <summary>
+    /// Extracts information about the currently active view, elements visible in it,
+    /// and lists all sheets/views in the model.
+    /// </summary>
+    public static ActiveViewData ExtractActiveView(Autodesk.Revit.UI.UIDocument uidoc)
+    {
+        var doc = uidoc.Document;
+        var view = uidoc.ActiveView;
+
+        var data = new ActiveViewData
+        {
+            ViewName = view.Name,
+            ViewType = view.ViewType.ToString(),
+            LevelName = view.GenLevel?.Name ?? "N/A",
+            Scale = view.Scale,
+            DetailLevel = view.DetailLevel.ToString()
+        };
+
+        // Elements visible in the current view
+        var visibleElements = new FilteredElementCollector(doc, view.Id)
+            .WhereElementIsNotElementType()
+            .ToElements();
+
+        var viewCategoryCounts = new Dictionary<string, int>();
+        foreach (var elem in visibleElements)
+        {
+            var cat = elem.Category;
+            if (cat == null || string.IsNullOrWhiteSpace(cat.Name)) continue;
+            viewCategoryCounts[cat.Name] = viewCategoryCounts.GetValueOrDefault(cat.Name, 0) + 1;
+        }
+
+        data.VisibleElementCount = visibleElements.Count;
+        data.VisibleCategoryCounts = viewCategoryCounts
+            .OrderByDescending(kv => kv.Value)
+            .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+        // All sheets in the model
+        var sheets = new FilteredElementCollector(doc)
+            .OfClass(typeof(ViewSheet))
+            .Cast<ViewSheet>()
+            .OrderBy(s => s.SheetNumber)
+            .ToList();
+
+        data.Sheets = sheets.Select(s => new SheetInfo
+        {
+            SheetNumber = s.SheetNumber,
+            SheetName = s.Name
+        }).ToList();
+
+        // All views in the model
+        var views = new FilteredElementCollector(doc)
+            .OfClass(typeof(View))
+            .Cast<View>()
+            .Where(v => !v.IsTemplate)
+            .OrderBy(v => v.ViewType.ToString())
+            .ThenBy(v => v.Name)
+            .ToList();
+
+        data.Views = views.Select(v => new ViewInfo
+        {
+            Name = v.Name,
+            ViewType = v.ViewType.ToString(),
+            LevelName = v.GenLevel?.Name ?? ""
+        }).ToList();
+
+        return data;
+    }
+
+    /// <summary>
     /// Checks if a built-in category is user-facing (visible in schedules/browsers).
     /// We include all categories that have a valid CategoryType of Model or Annotation.
     /// </summary>
