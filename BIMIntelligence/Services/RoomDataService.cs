@@ -329,7 +329,34 @@ public static class RoomDataService
             }
         }
 
-        return (allColumns, rows);
+        // Remove columns where ALL values are empty/null
+        var populatedColumns = allColumns.Where(col =>
+        {
+            // Always keep synthetic columns
+            if (syntheticColumns.Contains(col)) return true;
+
+            // Check if any row has a non-empty value
+            return rows.Any(row =>
+            {
+                var dict = (IDictionary<string, object?>)row;
+                var val = dict.ContainsKey(col) ? dict[col] : null;
+                return val != null && val.ToString() != "";
+            });
+        }).ToList();
+
+        // Remove empty columns from each row too
+        var removedColumns = allColumns.Except(populatedColumns).ToHashSet();
+        if (removedColumns.Count > 0)
+        {
+            foreach (var row in rows)
+            {
+                var dict = (IDictionary<string, object?>)row;
+                foreach (var col in removedColumns)
+                    dict.Remove(col);
+            }
+        }
+
+        return (populatedColumns, rows);
     }
 
     /// <summary>
