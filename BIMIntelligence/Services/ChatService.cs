@@ -11,9 +11,7 @@ public class ChatService
     private readonly string _apiKey;
     private readonly HttpClient _httpClient;
     private const string ApiUrl = "https://api.anthropic.com/v1/messages";
-    private const string Model = "claude-3-haiku-20240307";
-    // Switch back when Sonnet 4 is available:
-    // "claude-sonnet-4-20250514"
+    private const string Model = "claude-sonnet-4-20250514";
 
     private const string SystemPrompt = @"You are a BIM assistant running INSIDE Autodesk Revit as a plugin. You ARE directly connected to the currently open Revit model and can see what the user is currently viewing.
 
@@ -35,7 +33,9 @@ Strategy:
 Rules:
 - Always call a tool. Never guess.
 - You ARE connected to the live Revit model. Never say otherwise.
-- Be concise and confident.";
+- Be concise and confident.
+- When listing rooms or elements, ALWAYS show specific names, numbers, and values — never give generic summaries like 'the query returned rooms'. List them.
+- Format lists cleanly with bullet points or tables.";
 
     private static readonly object[] ToolDefinitions = new object[]
     {
