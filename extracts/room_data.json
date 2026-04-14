@@ -1,0 +1,730 @@
+[
+  {
+    "RoomName": "Vest.",
+    "RoomNumber": "101",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 40.8,
+    "DoorCount": 4,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Lobby",
+    "RoomNumber": "102",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 327.19,
+    "DoorCount": 12,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Cafeteria",
+    "RoomNumber": "121",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 146.96,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Prep/Dish",
+    "RoomNumber": "122",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 22.21,
+    "DoorCount": 2,
+    "WindowCount": 2
+  },
+  {
+    "RoomName": "Dry Storage",
+    "RoomNumber": "124",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 8.46,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Electrical",
+    "RoomNumber": "125",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 5.69,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Conference",
+    "RoomNumber": "123",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 41.5,
+    "DoorCount": 1,
+    "WindowCount": 4
+  },
+  {
+    "RoomName": "Office",
+    "RoomNumber": "127",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 15.36,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Admin",
+    "RoomNumber": "126",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 15.71,
+    "DoorCount": 3,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Storage",
+    "RoomNumber": "128",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 9.7,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Toilet",
+    "RoomNumber": "129",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 5.58,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Stair",
+    "RoomNumber": "130",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 18.92,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Corridor",
+    "RoomNumber": "131",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 54.62,
+    "DoorCount": 5,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Sprinkler",
+    "RoomNumber": "119",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 8.9,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Electrical",
+    "RoomNumber": "118",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 17.38,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "117",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 48.56,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Lounge",
+    "RoomNumber": "120",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 40.87,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Conference",
+    "RoomNumber": "116",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 31.57,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "115",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 126.7,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Stair",
+    "RoomNumber": "114",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 19.18,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Electrical",
+    "RoomNumber": "112",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 7.08,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Lounge",
+    "RoomNumber": "111",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 38.49,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Men",
+    "RoomNumber": "110",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 13.69,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Women",
+    "RoomNumber": "109",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 13.12,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Corridor",
+    "RoomNumber": "107",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 137.48,
+    "DoorCount": 12,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "108",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 89.47,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "106",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 47.99,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "105",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 97.12,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "104",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 47.99,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Conference",
+    "RoomNumber": "103",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 47.17,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Stair",
+    "RoomNumber": "132",
+    "Level": "01 - Entry Level",
+    "AreaSqM": 19.18,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Stair",
+    "RoomNumber": "201",
+    "Level": "02 - Floor",
+    "AreaSqM": 19.45,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "202",
+    "Level": "02 - Floor",
+    "AreaSqM": 30.75,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Computer Lab",
+    "RoomNumber": "203",
+    "Level": "02 - Floor",
+    "AreaSqM": 31.71,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "204",
+    "Level": "02 - Floor",
+    "AreaSqM": 47.97,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "205",
+    "Level": "02 - Floor",
+    "AreaSqM": 31.57,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Corridor",
+    "RoomNumber": "235",
+    "Level": "02 - Floor",
+    "AreaSqM": 137.61,
+    "DoorCount": 11,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Men",
+    "RoomNumber": "210",
+    "Level": "02 - Floor",
+    "AreaSqM": 13.12,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Women",
+    "RoomNumber": "211",
+    "Level": "02 - Floor",
+    "AreaSqM": 13.69,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Lounge",
+    "RoomNumber": "212",
+    "Level": "02 - Floor",
+    "AreaSqM": 38.49,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Electrical",
+    "RoomNumber": "214",
+    "Level": "02 - Floor",
+    "AreaSqM": 7.08,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Lobby",
+    "RoomNumber": "216",
+    "Level": "02 - Floor",
+    "AreaSqM": 284.59,
+    "DoorCount": 9,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Stair",
+    "RoomNumber": "217",
+    "Level": "02 - Floor",
+    "AreaSqM": 19.18,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "218",
+    "Level": "02 - Floor",
+    "AreaSqM": 93.78,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Library",
+    "RoomNumber": "219",
+    "Level": "02 - Floor",
+    "AreaSqM": 122.21,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Electrical",
+    "RoomNumber": "220",
+    "Level": "02 - Floor",
+    "AreaSqM": 15.88,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "221",
+    "Level": "02 - Floor",
+    "AreaSqM": 40.91,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Computer Lab",
+    "RoomNumber": "222",
+    "Level": "02 - Floor",
+    "AreaSqM": 55.1,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Lounge",
+    "RoomNumber": "223",
+    "Level": "02 - Floor",
+    "AreaSqM": 133.24,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Caferteria",
+    "RoomNumber": "224",
+    "Level": "02 - Floor",
+    "AreaSqM": 34.94,
+    "DoorCount": 0,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Women",
+    "RoomNumber": "225",
+    "Level": "02 - Floor",
+    "AreaSqM": 6.82,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Men",
+    "RoomNumber": "226",
+    "Level": "02 - Floor",
+    "AreaSqM": 7.1,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Electrical",
+    "RoomNumber": "227",
+    "Level": "02 - Floor",
+    "AreaSqM": 5.21,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Copy/Print",
+    "RoomNumber": "228",
+    "Level": "02 - Floor",
+    "AreaSqM": 12.33,
+    "DoorCount": 1,
+    "WindowCount": 2
+  },
+  {
+    "RoomName": "Administration",
+    "RoomNumber": "229",
+    "Level": "02 - Floor",
+    "AreaSqM": 40.4,
+    "DoorCount": 2,
+    "WindowCount": 3
+  },
+  {
+    "RoomName": "Office",
+    "RoomNumber": "230",
+    "Level": "02 - Floor",
+    "AreaSqM": 14.82,
+    "DoorCount": 1,
+    "WindowCount": 1
+  },
+  {
+    "RoomName": "Office",
+    "RoomNumber": "231",
+    "Level": "02 - Floor",
+    "AreaSqM": 25.5,
+    "DoorCount": 1,
+    "WindowCount": 3
+  },
+  {
+    "RoomName": "Toilet",
+    "RoomNumber": "232",
+    "Level": "02 - Floor",
+    "AreaSqM": 5.58,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Stair",
+    "RoomNumber": "233",
+    "Level": "02 - Floor",
+    "AreaSqM": 19.18,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Corridor",
+    "RoomNumber": "234",
+    "Level": "02 - Floor",
+    "AreaSqM": 115.56,
+    "DoorCount": 10,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Stair",
+    "RoomNumber": "301",
+    "Level": "03 - Floor",
+    "AreaSqM": 19.45,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "302",
+    "Level": "03 - Floor",
+    "AreaSqM": 79.87,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "303",
+    "Level": "03 - Floor",
+    "AreaSqM": 64.41,
+    "DoorCount": 3,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "304",
+    "Level": "03 - Floor",
+    "AreaSqM": 47.99,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "305",
+    "Level": "03 - Floor",
+    "AreaSqM": 64.41,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "306",
+    "Level": "03 - Floor",
+    "AreaSqM": 73.04,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Men",
+    "RoomNumber": "307",
+    "Level": "03 - Floor",
+    "AreaSqM": 13.12,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Women",
+    "RoomNumber": "308",
+    "Level": "03 - Floor",
+    "AreaSqM": 13.69,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Lounge",
+    "RoomNumber": "309",
+    "Level": "03 - Floor",
+    "AreaSqM": 38.49,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Electrical",
+    "RoomNumber": "310",
+    "Level": "03 - Floor",
+    "AreaSqM": 7.01,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Stair",
+    "RoomNumber": "312",
+    "Level": "03 - Floor",
+    "AreaSqM": 19.18,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "313",
+    "Level": "03 - Floor",
+    "AreaSqM": 77.5,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "314",
+    "Level": "03 - Floor",
+    "AreaSqM": 80.69,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Instruction",
+    "RoomNumber": "315",
+    "Level": "03 - Floor",
+    "AreaSqM": 48.56,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Storage",
+    "RoomNumber": "316",
+    "Level": "03 - Floor",
+    "AreaSqM": 6.9,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Electrical",
+    "RoomNumber": "317",
+    "Level": "03 - Floor",
+    "AreaSqM": 15.91,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Lobby",
+    "RoomNumber": "318",
+    "Level": "03 - Floor",
+    "AreaSqM": 323.2,
+    "DoorCount": 11,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Media Review",
+    "RoomNumber": "319",
+    "Level": "03 - Floor",
+    "AreaSqM": 44.16,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Media Review",
+    "RoomNumber": "320",
+    "Level": "03 - Floor",
+    "AreaSqM": 52.52,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Open Office",
+    "RoomNumber": "321",
+    "Level": "03 - Floor",
+    "AreaSqM": 131.53,
+    "DoorCount": 2,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Administration",
+    "RoomNumber": "322",
+    "Level": "03 - Floor",
+    "AreaSqM": 58.79,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Electrical",
+    "RoomNumber": "323",
+    "Level": "03 - Floor",
+    "AreaSqM": 5.6,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Advisors",
+    "RoomNumber": "324",
+    "Level": "03 - Floor",
+    "AreaSqM": 50.16,
+    "DoorCount": 1,
+    "WindowCount": 4
+  },
+  {
+    "RoomName": "Conference",
+    "RoomNumber": "325",
+    "Level": "03 - Floor",
+    "AreaSqM": 59.93,
+    "DoorCount": 1,
+    "WindowCount": 5
+  },
+  {
+    "RoomName": "Toilet",
+    "RoomNumber": "326",
+    "Level": "03 - Floor",
+    "AreaSqM": 5.58,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Stair",
+    "RoomNumber": "327",
+    "Level": "03 - Floor",
+    "AreaSqM": 19.18,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Corridor",
+    "RoomNumber": "328",
+    "Level": "03 - Floor",
+    "AreaSqM": 54.88,
+    "DoorCount": 5,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Lounge",
+    "RoomNumber": "206",
+    "Level": "02 - Floor",
+    "AreaSqM": 31.57,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Copy/Print",
+    "RoomNumber": "207",
+    "Level": "02 - Floor",
+    "AreaSqM": 31.71,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Drafting",
+    "RoomNumber": "208",
+    "Level": "02 - Floor",
+    "AreaSqM": 47.99,
+    "DoorCount": 1,
+    "WindowCount": 0
+  },
+  {
+    "RoomName": "Computer Lab",
+    "RoomNumber": "209",
+    "Level": "02 - Floor",
+    "AreaSqM": 73.04,
+    "DoorCount": 1,
+    "WindowCount": 0
+  }
+]
