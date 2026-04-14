@@ -36,22 +36,22 @@ public class DataExtractionHandler : IExternalEventHandler
                     break;
 
                 case "extract_model_info":
-                    var summary = RoomDataService.ExtractModelSummary(doc);
+                    var summary = SmartDataService.ExtractModelSummary(doc);
                     result = Newtonsoft.Json.JsonConvert.SerializeObject(summary);
                     break;
 
                 case "extract_current_view":
-                    var viewData = RoomDataService.ExtractActiveView(uidoc);
+                    var viewData = SmartDataService.ExtractActiveView(uidoc);
                     result = Newtonsoft.Json.JsonConvert.SerializeObject(viewData);
                     break;
 
                 case "extract_category_data":
-                    var catData = RoomDataService.ExtractCategoryForChat(doc, CategoryFilter);
+                    var catData = SmartDataService.ExtractCategoryForChat(doc, CategoryFilter);
                     result = Newtonsoft.Json.JsonConvert.SerializeObject(catData);
                     break;
 
                 case "extract_relationships":
-                    var relData = RoomDataService.ExtractRelationships(doc);
+                    var relData = SmartDataService.ExtractRelationships(doc);
                     result = Newtonsoft.Json.JsonConvert.SerializeObject(relData);
                     break;
 

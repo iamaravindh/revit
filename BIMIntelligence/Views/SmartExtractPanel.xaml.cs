@@ -85,7 +85,7 @@ public partial class SmartExtractPanel : Window
             Mouse.OverrideCursor = Cursors.Wait;
             _currentCategoryName = categoryName;
 
-            var (columns, rows) = RoomDataService.ExtractCategoryElements(_doc, categoryName);
+            var (columns, rows) = SmartDataService.ExtractCategoryElements(_doc, categoryName);
             _currentColumns = columns;
             _currentRows = rows;
 

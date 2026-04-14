@@ -21,7 +21,7 @@ public class SmartExtractCommand : IExternalCommand
             }
 
             // Scan the model for all categories
-            var summary = RoomDataService.ExtractModelSummary(doc);
+            var summary = SmartDataService.ExtractModelSummary(doc);
 
             if (summary.CategoryCounts.Count == 0)
             {
