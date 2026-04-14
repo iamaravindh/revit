@@ -77,20 +77,24 @@ BIMIntelligence/
 
 ### Installation
 
+**Step 1: Set your API key**
+
+Edit `BIMIntelligence/appsettings.json` and replace the placeholder with your Anthropic API key:
+```json
+{
+  "AnthropicApiKey": "sk-ant-your-key-here"
+}
+```
+Get a key at [console.anthropic.com](https://console.anthropic.com) (API credits required, separate from Claude Pro subscription).
+
+**Step 2: Build and publish**
 ```bash
-# 1. Clone
-git clone https://github.com/iamaravindh/revit.git
-cd revit
-
-# 2. Set your API key
-# Edit BIMIntelligence/appsettings.json:
-# { "AnthropicApiKey": "sk-ant-..." }
-
-# 3. Build and publish
 cd BIMIntelligence
 dotnet publish -c Release -o "%APPDATA%\Autodesk\Revit\Addins\2027\BIMIntelligence"
+```
 
-# 4. Copy the add-in manifest
+**Step 3: Copy the add-in manifest**
+```bash
 copy BIMIntelligence.addin "%APPDATA%\Autodesk\Revit\Addins\2027\"
 ```
 
